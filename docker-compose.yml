@@ -1,0 +1,15 @@
+version: '3'
+services:
+  db:
+    image: postgres:15.2-alpine3.17
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: database
+    ports:
+      - 5432:5432
+  
+  frontend:
+    build: ./frontend
+    ports:
+      - 80:80
