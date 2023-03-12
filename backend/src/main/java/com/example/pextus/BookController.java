@@ -16,8 +16,11 @@ public class BookController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Book>> getBooks() {
-        return ResponseEntity.ok(this.bookService.getBooks());
+    public ResponseEntity<List<Book>> getBooks(@RequestParam(name = "q", defaultValue = "") String title) {
+        if (title.equals("")) {
+            return ResponseEntity.ok(this.bookService.getBooks());
+        }
+        return ResponseEntity.ok(this.bookService.searchBooksByTitle(title));
     }
 
     @GetMapping("/{id}")

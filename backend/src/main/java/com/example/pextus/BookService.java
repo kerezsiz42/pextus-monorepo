@@ -32,6 +32,10 @@ public class BookService {
         return this.bookRepository.save(book);
     }
 
+    public List<Book> searchBooksByTitle(@Valid @NotNull String title) {
+        return this.bookRepository.searchBooksByTitle(title);
+    }
+
     public void deleteBookById(@Valid @NotNull String id) {
         UUID uuid = UUID.fromString(id);
         try {
