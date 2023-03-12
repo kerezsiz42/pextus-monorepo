@@ -15,26 +15,26 @@ public class BookController {
         this.bookService = bookService;
     }
 
-    @GetMapping
+    @GetMapping(produces = "application/json")
     public ResponseEntity<List<Book>> getBooks(@RequestParam(name = "q", defaultValue = "") String title) {
         if (title.equals("")) {
-            return ResponseEntity.ok(this.bookService.getBooks());
+            return ResponseEntity.ok(this.bookService.getAllBooks());
         }
         return ResponseEntity.ok(this.bookService.searchBooksByTitle(title));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Optional<Book>> findBookById(@PathVariable String id) {
+    @GetMapping(value = "/{id}", produces = "application/json")
+    public ResponseEntity<Optional<Book>> getBook(@PathVariable String id) {
         return ResponseEntity.ok(this.bookService.findBookById(id));
     }
 
-    @PostMapping
-    public ResponseEntity<Book> createBook(@RequestBody Book book) {
-        return ResponseEntity.ok(this.bookService.createBook(book));
+    @PutMapping(produces = "application/json")
+    public ResponseEntity<Book> putBook(@RequestBody Book book) {
+        return ResponseEntity.ok(this.bookService.createOrModifyBook(book));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteBookById(@PathVariable String id) {
+    @DeleteMapping(value = "/{id}", produces = "application/json")
+    public ResponseEntity<String> deleteBook(@PathVariable String id) {
         this.bookService.deleteBookById(id);
         return ResponseEntity.ok(id);
     }

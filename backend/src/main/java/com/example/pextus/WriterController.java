@@ -16,24 +16,24 @@ public class WriterController {
         this.writerService = writerService;
     }
 
-    @GetMapping
+    @GetMapping(produces = "application/json")
     public ResponseEntity<List<Writer>> getWriters() {
         return ResponseEntity.ok(this.writerService.getWriters());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Optional<Writer>> findWriterById(@PathVariable String id) {
+    @GetMapping(value = "/{id}", produces = "application/json")
+    public ResponseEntity<Optional<Writer>> getWriter(@PathVariable String id) {
         Optional<Writer> writer = this.writerService.findWriterById(id);
         return ResponseEntity.ok(writer);
     }
 
-    @PostMapping
-    public ResponseEntity<Writer> createWriter(@RequestBody Writer writer) {
-        return ResponseEntity.ok(this.writerService.createWriter(writer));
+    @PutMapping(produces = "application/json")
+    public ResponseEntity<Writer> putWriter(@RequestBody Writer writer) {
+        return ResponseEntity.ok(this.writerService.createOrModifyWriter(writer));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteWriterById(@PathVariable String id) {
+    @DeleteMapping(value = "/{id}", produces = "application/json")
+    public ResponseEntity<String> deleteWriter(@PathVariable String id) {
         this.writerService.deleteBookById(id);
         return ResponseEntity.ok(id);
     }

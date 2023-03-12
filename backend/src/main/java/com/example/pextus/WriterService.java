@@ -28,7 +28,7 @@ public class WriterService {
         return this.writerRepository.findById(uuid);
     }
 
-    public Writer createWriter(@Valid Writer writer) {
+    public Writer createOrModifyWriter(@Valid Writer writer) {
         return this.writerRepository.save(writer);
     }
 

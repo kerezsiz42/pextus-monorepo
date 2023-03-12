@@ -19,7 +19,7 @@ public class BookService {
         this.bookRepository = bookRepository;
     }
 
-    public List<Book> getBooks() {
+    public List<Book> getAllBooks() {
         return this.bookRepository.findAll();
     }
 
@@ -28,7 +28,7 @@ public class BookService {
         return this.bookRepository.findById(uuid);
     }
 
-    public Book createBook(@Valid Book book) {
+    public Book createOrModifyBook(@Valid Book book) {
         return this.bookRepository.save(book);
     }
 
