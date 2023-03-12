@@ -9,5 +9,4 @@ public class PextusApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(PextusApplication.class, args);
 	}
-
 }
