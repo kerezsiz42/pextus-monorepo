@@ -2,6 +2,7 @@ package com.example.pextus;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -13,10 +14,13 @@ import java.util.UUID;
 public class BookService {
 
     private final BookRepository bookRepository;
+    private final WriterService writerService;
 
     @Autowired
-    public BookService(BookRepository bookRepository) {
+    public BookService(BookRepository bookRepository, WriterService writerService) {
         this.bookRepository = bookRepository;
+
+        this.writerService = writerService;
     }
 
     public List<Book> getAllBooks() {
@@ -24,12 +28,21 @@ public class BookService {
     }
 
     public Optional<Book> findBookById(@Valid @NotNull String id) {
-        UUID uuid = UUID.fromString(id);
-        return this.bookRepository.findById(uuid);
+        try {
+            UUID uuid = UUID.fromString(id);
+            return this.bookRepository.findById(uuid);
+        } catch(IllegalArgumentException e) {
+            return Optional.empty();
+        }
     }
 
-    public Book createOrModifyBook(@Valid Book book) {
-        return this.bookRepository.save(book);
+    public Optional<Book> createOrModifyBook(PutBookData putBookData) {
+        Optional<Writer> writer = this.writerService.findWriterById(putBookData.getWriterId());
+        if (writer.isEmpty()) {
+            return Optional.empty();
+        }
+        Book book = new Book(putBookData.getTitle(), putBookData.getPublicationYear(), writer.get());
+        return Optional.of(this.bookRepository.save(book));
     }
 
     public List<Book> searchBooksByTitle(@Valid @NotNull String title) {
@@ -37,8 +50,8 @@ public class BookService {
     }
 
     public void deleteBookById(@Valid @NotNull String id) {
-        UUID uuid = UUID.fromString(id);
         try {
+            UUID uuid = UUID.fromString(id);
             this.bookRepository.deleteById(uuid);
         } catch(EmptyResultDataAccessException err) {}
     }

@@ -23,9 +23,13 @@ public class WriterService {
         return this.writerRepository.findAll();
     }
 
-    public Optional<Writer> findWriterById(@Valid @NotNull String id) {
-        UUID uuid = UUID.fromString(id);
-        return this.writerRepository.findById(uuid);
+    public Optional<Writer> findWriterById(@Valid String id) {
+        try {
+            UUID uuid = UUID.fromString(id);
+            return this.writerRepository.findById(uuid);
+        } catch(IllegalArgumentException e) {
+            return Optional.empty();
+        }
     }
 
     public Writer createOrModifyWriter(@Valid Writer writer) {

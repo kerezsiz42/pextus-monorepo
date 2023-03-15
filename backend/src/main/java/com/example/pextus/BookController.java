@@ -28,21 +28,29 @@ public class BookController {
     }
 
     @GetMapping(value = "/{id}", produces = "application/json")
-    public ResponseEntity<Optional<Book>> getBook(@PathVariable String id) {
+    public ResponseEntity<Book> getBook(@PathVariable String id) {
         logger.info("HTTP GET /api/v1/books/{id}");
-        return ResponseEntity.ok(this.bookService.findBookById(id));
+        Optional<Book> book = this.bookService.findBookById(id);
+        if(book.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(book.get());
     }
 
     @PutMapping(produces = "application/json")
-    public ResponseEntity<Book> putBook(@RequestBody Book book) {
+    public ResponseEntity<String> putBook(@RequestBody PutBookData putBookData) {
         logger.info("HTTP PUT /api/v1/books");
-        return ResponseEntity.ok(this.bookService.createOrModifyBook(book));
+        Optional<Book> book = this.bookService.createOrModifyBook(putBookData);
+        if (book.isEmpty()) {
+            return ResponseEntity.badRequest().body("Failed to insert book");
+        }
+        return ResponseEntity.ok("Book successfully inserted" + book.get().getId().toString());
     }
 
     @DeleteMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<String> deleteBook(@PathVariable String id) {
         logger.info("HTTP DELETE /api/v1/books/{id}");
         this.bookService.deleteBookById(id);
-        return ResponseEntity.ok(id);
+        return ResponseEntity.ok("Book successfully deleted: " + id);
     }
 }

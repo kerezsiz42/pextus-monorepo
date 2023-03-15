@@ -1,7 +1,8 @@
 package com.example.pextus;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
@@ -12,6 +13,7 @@ import java.util.UUID;
 @Setter
 @Entity
 @Table(name = "books")
+@NoArgsConstructor
 public class Book {
     @Id
     @GeneratedValue(generator = "UUID")
@@ -31,10 +33,8 @@ public class Book {
 
     @ManyToOne
     @JoinColumn(name = "writer_id", nullable = false, foreignKey = @ForeignKey(name = "books_writer_id_fk"))
-    @JsonIgnoreProperties("books")
+    @JsonIdentityReference(alwaysAsId = true)
     private Writer writer;
-
-    protected Book() {}
 
     public Book(String title, Integer publicationYear, Writer writer) {
         this.title = title;

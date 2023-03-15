@@ -1,1 +1,58 @@
-<h1>Books</h1>
+<table class="text-xs w-full my-5 border-separate border-spacing-2">
+  <thead>
+    <tr>
+      <th>Book id</th>
+      <th>Writer id</th>
+      <th>Title</th>
+      <th>Publication year</th>
+      <th>Actions</th>
+    </tr>
+    <tr>
+      <th>
+        <span>Will be set automatically</span>
+      </th>
+      <th>
+        <input
+          class="rounded border border-white outline-none w-full bg-black p-1"
+          [(ngModel)]="writerId"
+          type="text"
+        />
+      </th>
+      <th>
+        <input
+          class="rounded border border-white outline-none w-full bg-black p-1"
+          [(ngModel)]="title"
+          type="text"
+        />
+      </th>
+      <th>
+        <input
+          class="rounded border border-white outline-none w-full bg-black p-1"
+          [(ngModel)]="publicationYear"
+          type="number"
+        />
+      </th>
+      <th>
+        <button
+          type="button"
+          class="rounded bg-green-500 p-2"
+          (click)="addNew()"
+        >
+          Add new
+        </button>
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let book of books">
+      <td class="text-center align-middle">{{ book.id }}</td>
+      <td class="text-center align-middle">{{ book.writer }}</td>
+      <td class="text-center align-middle">{{ book.title }}</td>
+      <td class="text-center align-middle">{{ book.publicationYear }}</td>
+      <td class="flex justify-around">
+        <button type="button" class="rounded bg-yellow-500 p-2">Update</button>
+        <button type="button" class="rounded bg-red-500 p-2">Delete</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
