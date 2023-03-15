@@ -1,3 +1,26 @@
-<h1 class="text-3xl font-bold underline">
-  Hello world!
-</h1>
+<div class="w-[100vw] h-[100vh] text-white bg-black font-mono">
+  <div class="p-2 max-w-2xl mx-auto">
+    <h1 class="text-4xl p-2 text-center">Library</h1>
+    <nav class="grid grid-cols-3 gap-5">
+      <a
+        routerLink="/books"
+        class="border rounded p-1 text-center"
+        routerLinkActive="underline"
+        >List books</a
+      >
+      <a
+        routerLink="/writers"
+        class="border rounded p-1 text-center"
+        routerLinkActive="underline"
+        >List writers</a
+      >
+      <a
+        routerLink="/find-books"
+        class="border rounded p-1 text-center"
+        routerLinkActive="underline"
+        >Find book by title</a
+      >
+    </nav>
+    <router-outlet></router-outlet>
+  </div>
+</div>
