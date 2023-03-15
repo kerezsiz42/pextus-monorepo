@@ -22,6 +22,8 @@ type Book = z.infer<typeof bookSchema>;
 })
 export class BooksComponent implements OnInit {
   endpoint = 'http://localhost:8080';
+  public idInputDisabled = false;
+  public id = '';
   public publicationYear = '';
   public title = '';
   public writerId = '';
@@ -33,8 +35,16 @@ export class BooksComponent implements OnInit {
     this.fetchBooks();
   }
 
+  reset() {
+    this.id = '';
+    this.publicationYear = '';
+    this.title = '';
+    this.writerId = '';
+    this.idInputDisabled = true;
+  }
+
   fetchBooks() {
-    this.http.get(this.endpoint + '/api/v1/books').subscribe((res) => {
+    this.http.get(`${this.endpoint}/api/v1/books`).subscribe((res) => {
       const result = bookSchema.array().safeParse(res);
       if (!result.success) {
         console.error(result.error);
@@ -44,9 +54,15 @@ export class BooksComponent implements OnInit {
     });
   }
 
-  update() {}
+  update(book: Book) {
+    this.id = book.id;
+    this.publicationYear = book.publicationYear.toString();
+    this.title = book.title;
+    this.writerId = book.writer;
+    this.idInputDisabled = false;
+  }
 
-  addNew() {
+  insertChange() {
     this.http
       .put(
         this.endpoint + '/api/v1/books',
@@ -57,10 +73,14 @@ export class BooksComponent implements OnInit {
         }),
         { headers }
       )
-      .subscribe((res) => {
-        console.log(res);
+      .subscribe(() => {
+        this.fetchBooks();
       });
   }
 
-  delete() {}
+  delete(id: string) {
+    this.http.delete(`${this.endpoint}/api/v1/books/${id}`).subscribe(() => {
+      this.fetchBooks();
+    });
+  }
 }

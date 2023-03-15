@@ -9,7 +9,12 @@
     </tr>
     <tr>
       <th>
-        <span>Will be set automatically</span>
+        <input
+          class="rounded border border-white outline-none w-full bg-black p-1"
+          [(ngModel)]="id"
+          type="text"
+          [disabled]="idInputDisabled"
+        />
       </th>
       <th>
         <input
@@ -32,13 +37,16 @@
           type="number"
         />
       </th>
-      <th>
+      <th class="flex justify-around">
         <button
           type="button"
           class="rounded bg-green-500 p-2"
-          (click)="addNew()"
+          (click)="insertChange()"
         >
-          Add new
+          Commit
+        </button>
+        <button type="button" class="rounded bg-gray-500 p-2" (click)="reset()">
+          Reset
         </button>
       </th>
     </tr>
@@ -50,8 +58,20 @@
       <td class="text-center align-middle">{{ book.title }}</td>
       <td class="text-center align-middle">{{ book.publicationYear }}</td>
       <td class="flex justify-around">
-        <button type="button" class="rounded bg-yellow-500 p-2">Update</button>
-        <button type="button" class="rounded bg-red-500 p-2">Delete</button>
+        <button
+          type="button"
+          class="rounded bg-yellow-500 p-2"
+          (click)="update(book)"
+        >
+          Update
+        </button>
+        <button
+          type="button"
+          class="rounded bg-red-500 p-2"
+          (click)="delete(book.id)"
+        >
+          Delete
+        </button>
       </td>
     </tr>
   </tbody>

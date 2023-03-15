@@ -38,19 +38,19 @@ public class BookController {
     }
 
     @PutMapping(produces = "application/json")
-    public ResponseEntity<String> putBook(@RequestBody PutBookData putBookData) {
+    public ResponseEntity<ApiResponse> putBook(@RequestBody PutBookData putBookData) {
         logger.info("HTTP PUT /api/v1/books");
         Optional<Book> book = this.bookService.createOrModifyBook(putBookData);
         if (book.isEmpty()) {
-            return ResponseEntity.badRequest().body("Failed to insert book");
+            return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok("Book successfully inserted" + book.get().getId().toString());
+        return ResponseEntity.ok(new ApiResponse(book.get().getId().toString()));
     }
 
     @DeleteMapping(value = "/{id}", produces = "application/json")
-    public ResponseEntity<String> deleteBook(@PathVariable String id) {
+    public ResponseEntity<ApiResponse> deleteBook(@PathVariable String id) {
         logger.info("HTTP DELETE /api/v1/books/{id}");
         this.bookService.deleteBookById(id);
-        return ResponseEntity.ok("Book successfully deleted: " + id);
+        return ResponseEntity.ok(new ApiResponse(id));
     }
 }

@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
+import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.util.UUID;
 
@@ -36,7 +37,7 @@ public class Book {
     @JsonIdentityReference(alwaysAsId = true)
     private Writer writer;
 
-    public Book(String title, Integer publicationYear, Writer writer) {
+    public @Valid Book(String title, Integer publicationYear, Writer writer) {
         this.title = title;
         this.publicationYear = publicationYear;
         this.writer = writer;
