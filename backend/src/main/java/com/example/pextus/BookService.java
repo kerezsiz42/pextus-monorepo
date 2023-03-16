@@ -1,8 +1,9 @@
 package com.example.pextus;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -12,14 +13,13 @@ import java.util.UUID;
 
 @Service
 public class BookService {
-
     private final BookRepository bookRepository;
     private final WriterService writerService;
+    private static final Logger logger = LoggerFactory.getLogger(BookService.class);
 
     @Autowired
     public BookService(BookRepository bookRepository, WriterService writerService) {
         this.bookRepository = bookRepository;
-
         this.writerService = writerService;
     }
 
@@ -36,12 +36,23 @@ public class BookService {
         }
     }
 
-    public Optional<Book> createOrModifyBook(PutBookData putBookData) {
-        Optional<Writer> writer = this.writerService.findWriterById(putBookData.getWriterId());
+    public Optional<Book> createOrModifyBook(BookData bookData) {
+        Optional<Writer> writer = this.writerService.findWriterById(bookData.getWriterId());
         if (writer.isEmpty()) {
             return Optional.empty();
         }
-        Book book = new Book(putBookData.getTitle(), putBookData.getPublicationYear(), writer.get());
+        Book book;
+        if (bookData.getId() == null) {
+            book = new Book(bookData.getTitle(), bookData.getPublicationYear(), writer.get());
+        } else {
+            try {
+                UUID id = UUID.fromString(bookData.getId().trim());
+                book = new Book(id, bookData.getTitle(), bookData.getPublicationYear(), writer.get());
+                logger.info("Done");
+            } catch(IllegalArgumentException err) {
+                return Optional.empty();
+            }
+        }
         return Optional.of(this.bookRepository.save(book));
     }
 
@@ -49,10 +60,16 @@ public class BookService {
         return this.bookRepository.searchBooksByTitle(title);
     }
 
-    public void deleteBookById(@Valid @NotNull String id) {
+    public Optional<String> deleteBookById(@Valid @NotNull String id) {
         try {
             UUID uuid = UUID.fromString(id);
             this.bookRepository.deleteById(uuid);
-        } catch(EmptyResultDataAccessException err) {}
+            return Optional.of(id);
+        } catch(EmptyResultDataAccessException err) {
+            return Optional.empty();
+        }
+        catch(IllegalArgumentException err) {
+            return Optional.empty();
+        }
     }
 }

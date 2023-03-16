@@ -7,27 +7,27 @@ const headers = new HttpHeaders({
   Accept: 'application/json',
 });
 
-const bookSchema = z.object({
+export const bookSchema = z.object({
   id: z.string(),
   publicationYear: z.number(),
   title: z.string(),
   writer: z.string(),
 });
 
-type Book = z.infer<typeof bookSchema>;
+export type Book = z.infer<typeof bookSchema>;
 
 @Component({
   selector: 'books',
   templateUrl: './books.component.html',
 })
 export class BooksComponent implements OnInit {
-  endpoint = 'http://localhost:8080';
+  public endpoint = 'http://localhost:8080';
   public idInputDisabled = false;
   public id = '';
   public publicationYear = '';
   public title = '';
   public writerId = '';
-  books: Book[] = [];
+  public books: Book[] = [];
 
   constructor(private http: HttpClient) {}
 
@@ -67,6 +67,7 @@ export class BooksComponent implements OnInit {
       .put(
         this.endpoint + '/api/v1/books',
         JSON.stringify({
+          ...(this.id && { id: this.id.trim() }),
           publicationYear: parseInt(this.publicationYear),
           title: this.title.trim(),
           writerId: this.writerId.trim(),

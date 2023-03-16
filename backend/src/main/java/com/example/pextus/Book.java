@@ -42,4 +42,11 @@ public class Book {
         this.publicationYear = publicationYear;
         this.writer = writer;
     }
+
+    public @Valid Book(UUID id, String title, Integer publicationYear, Writer writer) {
+        this.id = id;
+        this.title = title;
+        this.publicationYear = publicationYear;
+        this.writer = writer;
+    }
 }

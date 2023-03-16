@@ -38,9 +38,10 @@ public class BookController {
     }
 
     @PutMapping(produces = "application/json")
-    public ResponseEntity<ApiResponse> putBook(@RequestBody PutBookData putBookData) {
+    public ResponseEntity<ApiResponse> putBook(@RequestBody BookData bookData) {
         logger.info("HTTP PUT /api/v1/books");
-        Optional<Book> book = this.bookService.createOrModifyBook(putBookData);
+        logger.info(bookData.toString());
+        Optional<Book> book = this.bookService.createOrModifyBook(bookData);
         if (book.isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
