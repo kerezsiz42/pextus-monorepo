@@ -24,10 +24,12 @@ public class BookService {
     }
 
     public List<Book> getAllBooks() {
+        logger.info("getAllBooks called");
         return this.bookRepository.findAll();
     }
 
     public Optional<Book> findBookById(@Valid @NotNull String id) {
+        logger.info("findBookById called with id: " + id);
         try {
             UUID uuid = UUID.fromString(id);
             return this.bookRepository.findById(uuid);
@@ -37,6 +39,7 @@ public class BookService {
     }
 
     public Optional<Book> createOrModifyBook(BookData bookData) {
+        logger.info("createOrModifyBook called with bookData: " + bookData.toString());
         Optional<Writer> writer = this.writerService.findWriterById(bookData.getWriterId());
         if (writer.isEmpty()) {
             return Optional.empty();
@@ -48,7 +51,6 @@ public class BookService {
             try {
                 UUID id = UUID.fromString(bookData.getId().trim());
                 book = new Book(id, bookData.getTitle(), bookData.getPublicationYear(), writer.get());
-                logger.info("Done");
             } catch(IllegalArgumentException err) {
                 return Optional.empty();
             }
@@ -57,16 +59,18 @@ public class BookService {
     }
 
     public List<Book> searchBooksByTitle(@Valid @NotNull String title) {
+        logger.info("searchBooksByTitle called with title: " + title);
         return this.bookRepository.searchBooksByTitle(title);
     }
 
     public Optional<String> deleteBookById(@Valid @NotNull String id) {
+        logger.info("deleteBookById called with id: " + id);
         try {
-            UUID uuid = UUID.fromString(id);
+            UUID uuid = UUID.fromString(id.trim());
             this.bookRepository.deleteById(uuid);
             return Optional.of(id);
         } catch(EmptyResultDataAccessException err) {
-            return Optional.empty();
+            return Optional.of(id);
         }
         catch(IllegalArgumentException err) {
             return Optional.empty();

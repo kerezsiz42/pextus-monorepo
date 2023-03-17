@@ -40,7 +40,6 @@ public class BookController {
     @PutMapping(produces = "application/json")
     public ResponseEntity<ApiResponse> putBook(@RequestBody BookData bookData) {
         logger.info("HTTP PUT /api/v1/books");
-        logger.info(bookData.toString());
         Optional<Book> book = this.bookService.createOrModifyBook(bookData);
         if (book.isEmpty()) {
             return ResponseEntity.badRequest().build();
@@ -51,7 +50,10 @@ public class BookController {
     @DeleteMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<ApiResponse> deleteBook(@PathVariable String id) {
         logger.info("HTTP DELETE /api/v1/books/{id}");
-        this.bookService.deleteBookById(id);
-        return ResponseEntity.ok(new ApiResponse(id));
+        Optional<String> bookId = this.bookService.deleteBookById(id);
+        if (bookId.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(new ApiResponse(bookId.get()));
     }
 }

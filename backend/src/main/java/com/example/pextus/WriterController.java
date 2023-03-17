@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -22,26 +21,36 @@ public class WriterController {
     @GetMapping(produces = "application/json")
     public ResponseEntity<List<Writer>> getWriters() {
         logger.info("HTTP GET /api/v1/writers");
-        return ResponseEntity.ok(this.writerService.getWriters());
+        return ResponseEntity.ok(this.writerService.getAllWriters());
     }
 
     @GetMapping(value = "/{id}", produces = "application/json")
-    public ResponseEntity<Optional<Writer>> getWriter(@PathVariable String id) {
+    public ResponseEntity<Writer> getWriter(@PathVariable String id) {
         logger.info("HTTP GET /api/v1/writers/{id}");
         Optional<Writer> writer = this.writerService.findWriterById(id);
-        return ResponseEntity.ok(writer);
+        if (writer.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(writer.get());
     }
 
     @PutMapping(produces = "application/json")
-    public ResponseEntity<Writer> putWriter(@RequestBody Writer writer) {
+    public ResponseEntity<ApiResponse> putWriter(@RequestBody WriterData writerData) {
         logger.info("HTTP PUT /api/v1/writers");
-        return ResponseEntity.ok(this.writerService.createOrModifyWriter(writer));
+        Optional<Writer> writer = this.writerService.createOrModifyWriter(writerData);
+        if (writer.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(new ApiResponse(writer.get().getId().toString()));
     }
 
     @DeleteMapping(value = "/{id}", produces = "application/json")
-    public ResponseEntity<String> deleteWriter(@PathVariable String id) {
+    public ResponseEntity<ApiResponse> deleteWriter(@PathVariable String id) {
         logger.info("HTTP DELETE /api/v1/writers/{id}");
-        this.writerService.deleteBookById(id);
-        return ResponseEntity.ok(id);
+        Optional<String> deletedId = this.writerService.deleteBookById(id);
+        if (deletedId.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(new ApiResponse(deletedId.get()));
     }
 }

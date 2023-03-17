@@ -41,11 +41,15 @@
         <button
           type="button"
           class="rounded bg-green-500 p-2"
-          (click)="insertChange()"
+          (click)="onInsertChange()"
         >
           Commit
         </button>
-        <button type="button" class="rounded bg-gray-500 p-2" (click)="reset()">
+        <button
+          type="button"
+          class="rounded bg-gray-500 p-2"
+          (click)="onResetFields()"
+        >
           Reset
         </button>
       </th>
@@ -61,14 +65,14 @@
         <button
           type="button"
           class="rounded bg-yellow-500 p-2"
-          (click)="update(book)"
+          (click)="onUpdateBook(book)"
         >
           Update
         </button>
         <button
           type="button"
           class="rounded bg-red-500 p-2"
-          (click)="delete(book.id)"
+          (click)="onDeleteBook(book.id)"
         >
           Delete
         </button>

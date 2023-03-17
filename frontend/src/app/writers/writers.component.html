@@ -1,1 +1,73 @@
-<h1>Writers</h1>
+<table class="text-xs w-full my-5 border-separate border-spacing-2">
+  <thead>
+    <tr>
+      <th>Writer id</th>
+      <th>Full name</th>
+      <th>Birth Date</th>
+      <th>Actions</th>
+    </tr>
+    <tr>
+      <th>
+        <input
+          class="rounded border border-white outline-none w-full bg-black p-1"
+          [(ngModel)]="id"
+          type="text"
+          [disabled]="idInputDisabled"
+        />
+      </th>
+      <th>
+        <input
+          class="rounded border border-white outline-none w-full bg-black p-1"
+          [(ngModel)]="fullName"
+          type="text"
+        />
+      </th>
+      <th>
+        <input
+          class="rounded border border-white outline-none w-full bg-black p-1"
+          [(ngModel)]="birthDate"
+          type="text"
+        />
+      </th>
+      <th class="flex justify-around">
+        <button
+          type="button"
+          class="rounded bg-green-500 p-2"
+          (click)="onInsertChange()"
+        >
+          Commit
+        </button>
+        <button
+          type="button"
+          class="rounded bg-gray-500 p-2"
+          (click)="resetFields()"
+        >
+          Reset
+        </button>
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let writer of writers">
+      <td class="text-center align-middle">{{ writer.id }}</td>
+      <td class="text-center align-middle">{{ writer.fullName }}</td>
+      <td class="text-center align-middle">{{ writer.birthDate }}</td>
+      <td class="flex justify-around">
+        <button
+          type="button"
+          class="rounded bg-yellow-500 p-2"
+          (click)="onUpdateWriter(writer)"
+        >
+          Update
+        </button>
+        <button
+          type="button"
+          class="rounded bg-red-500 p-2"
+          (click)="onDeleteWriter(writer.id)"
+        >
+          Delete
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>
