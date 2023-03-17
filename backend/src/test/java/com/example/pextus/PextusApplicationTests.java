@@ -7,7 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -36,24 +36,20 @@ class PextusApplicationTests {
 	@DisplayName("BookService.createOrModifyBook should create a new book if no books with the same id found")
 	@Test
 	void createBookTest() {
-		var numberOfBooks = bookRepository.findAll().size();
+		var numberOfBooksBefore = bookRepository.findAll().size();
 
 		WriterData writerData = new WriterData();
-		UUID writerUUID = UUID.randomUUID();
-		writerData.setId(writerUUID.toString());
 		writerData.setBirthDate(LocalDate.now().toString());
 		writerData.setFullName("The Author");
 		Optional<Writer> writer = writerService.createOrModifyWriter(writerData);
 		BookData bookData = new BookData();
-		UUID bookUUID = UUID.randomUUID();
-		bookData.setId(bookUUID.toString());
 		bookData.setTitle("The Book");
 		bookData.setPublicationYear(2023);
 		bookData.setWriterId(writer.get().getId().toString());
 		bookService.createOrModifyBook(bookData);
-		List<Book> books = bookService.getAllBooks();
+		var numberOfBooksAfter = bookRepository.findAll().size();
 
-		assertTrue(books.size() == numberOfBooks + 1);
+		assertEquals(numberOfBooksBefore, numberOfBooksAfter - 1);
 	}
 
 	@DisplayName("BookService.createOrModifyBook should update existing book when one with the same id found")
@@ -124,4 +120,71 @@ class PextusApplicationTests {
 		assertEquals(numberOfBooksStartingWithThe, 2);
 	}
 
+	@DisplayName("WriterService.getAllWriters should return a list of 3 writers")
+	@Test
+	void getAllWritersTest() {
+		var numberOfWriters = writerRepository.findAll().size();
+		List<Writer> writers = writerService.getAllWriters();
+		assertEquals(writers.size(), numberOfWriters);
+	}
+
+	@DisplayName("WriterService.createOrModifyWriter should create a new writer if no writers with the same id found")
+	@Test
+	void createWriterTest() {
+		var numberOfWritersBefore = writerRepository.findAll().size();
+		WriterData writerData = new WriterData();
+		writerData.setBirthDate(LocalDate.now().toString());
+		writerData.setFullName("The Author");
+		writerService.createOrModifyWriter(writerData);
+		var numberOfWritersAfter = writerRepository.findAll().size();
+
+		assertEquals(numberOfWritersBefore, numberOfWritersAfter - 1);
+	}
+
+	@DisplayName("WriterService.createOrModifyWriter should update existing writer when one with the same id found")
+	@Test
+	void updateWriterTest() {
+		WriterData writerData = new WriterData();
+		writerData.setBirthDate(LocalDate.now().toString());
+		writerData.setFullName("Arany János");
+		Optional<Writer> w1 = writerService.createOrModifyWriter(writerData);
+		var numberOfWritersBefore = writerRepository.findAll().size();
+
+		writerData.setId(w1.get().getId().toString());
+		writerData.setFullName("János Arany");
+		writerService.createOrModifyWriter(writerData);
+		var numberOfWritersAfter = writerRepository.findAll().size();
+
+		Optional<Writer> w2 = writerRepository.findById(w1.get().getId());
+
+		assertEquals(numberOfWritersBefore, numberOfWritersAfter);
+		assertEquals(w2.get().getFullName(), "János Arany");
+	}
+
+	@DisplayName("WriterService.findWriterById should retrieve the desired writer")
+	@Test
+	void findWriterByIdTest() {
+		WriterData writerData = new WriterData();
+		writerData.setBirthDate(LocalDate.now().toString());
+		writerData.setFullName("The New Author 2");
+		Optional<Writer> w1 = writerService.createOrModifyWriter(writerData);
+		Optional<Writer> w2 = writerService.findWriterById(w1.get().getId().toString());
+
+		assertEquals(w1.get().getId(), w2.get().getId());
+	}
+
+	@DisplayName("WriterService.deleteWriterById should delete the desired writer")
+	@Test
+	void deleteWriterByIdTest() {
+		WriterData writerData = new WriterData();
+		writerData.setBirthDate(LocalDate.now().toString());
+		writerData.setFullName("The New Author 3");
+		Optional<Writer> w1 = writerService.createOrModifyWriter(writerData);
+
+		writerService.deleteWriterById(w1.get().getId().toString());
+		Optional<Writer> w2 = writerRepository.findById(w1.get().getId());
+
+		assertFalse(w1.isEmpty());
+		assertTrue(w2.isEmpty());
+	}
 }

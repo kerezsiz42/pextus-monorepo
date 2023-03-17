@@ -47,7 +47,7 @@ public class WriterController {
     @DeleteMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<ApiResponse> deleteWriter(@PathVariable String id) {
         logger.info("HTTP DELETE /api/v1/writers/{id}");
-        Optional<String> deletedId = this.writerService.deleteBookById(id);
+        Optional<String> deletedId = this.writerService.deleteWriterById(id);
         if (deletedId.isEmpty()) {
             return ResponseEntity.badRequest().build();
         }

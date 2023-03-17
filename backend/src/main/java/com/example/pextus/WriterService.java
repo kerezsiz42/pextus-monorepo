@@ -54,7 +54,7 @@ public class WriterService {
         return Optional.of(this.writerRepository.save(writer));
     }
 
-    public Optional<String> deleteBookById(@Valid @NotNull String id) {
+    public Optional<String> deleteWriterById(@Valid @NotNull String id) {
         logger.info("deleteBookById called with id: " + id);
         try {
             UUID uuid = UUID.fromString(id);
