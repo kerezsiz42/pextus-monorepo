@@ -10,6 +10,7 @@ import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -36,6 +37,9 @@ public class Writer {
     @NotNull(message = "You must provide a valid birth date")
     @Column(name = "birth_date", nullable = false)
     private LocalDate birthDate;
+
+    @OneToMany(mappedBy = "writer", cascade = CascadeType.REMOVE)
+    private List<Book> books;
 
     public @Valid Writer(String fullName, LocalDate birthDate) {
         this.fullName = fullName;
