@@ -173,18 +173,28 @@ class PextusApplicationTests {
 		assertEquals(w1.get().getId(), w2.get().getId());
 	}
 
-	@DisplayName("WriterService.deleteWriterById should delete the desired writer")
+	@DisplayName("WriterService.deleteWriterById should delete the desired writer and all of its books")
 	@Test
 	void deleteWriterByIdTest() {
+		var numberOfBooksBeforeInsert = bookRepository.count();
 		WriterData writerData = new WriterData();
 		writerData.setBirthDate(LocalDate.now().toString());
 		writerData.setFullName("The New Author 3");
 		Optional<Writer> w1 = writerService.createOrModifyWriter(writerData);
+		BookData bookData = new BookData();
+		bookData.setTitle("The New Book 3");
+		bookData.setPublicationYear(1950);
+		bookData.setWriterId(w1.get().getId().toString());
+		bookService.createOrModifyBook(bookData);
+		var numberOfBooksAfterInsert = bookRepository.count();
 
 		writerService.deleteWriterById(w1.get().getId().toString());
 		Optional<Writer> w2 = writerRepository.findById(w1.get().getId());
+		var numberOfBooksAfterDelete = bookRepository.count();
 
 		assertFalse(w1.isEmpty());
 		assertTrue(w2.isEmpty());
+		assertEquals(numberOfBooksBeforeInsert, numberOfBooksAfterDelete);
+		assertNotEquals(numberOfBooksBeforeInsert, numberOfBooksAfterInsert);
 	}
 }
